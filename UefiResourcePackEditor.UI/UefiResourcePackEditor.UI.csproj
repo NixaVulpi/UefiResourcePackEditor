@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net462</TargetFramework>
+		<LangVersion>12</LangVersion>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
+		<ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+		<ApplicationManifest>Resources\Manifest.xml</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\UefiResourcePackEditor.Core\UefiResourcePackEditor.Core.csproj" />
+	</ItemGroup>
+</Project>

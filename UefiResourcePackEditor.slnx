@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="UefiResourcePackEditor.UI/UefiResourcePackEditor.UI.csproj" />
+  <Project Path="UefiResourcePackEditor.Core/UefiResourcePackEditor.Core.csproj" Id="e1a7f280-de7b-41d9-a3b7-573dd12c8d49" />
+</Solution>
