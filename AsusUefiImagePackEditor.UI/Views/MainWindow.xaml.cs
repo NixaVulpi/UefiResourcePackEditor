@@ -1,8 +1,8 @@
 using System.Windows;
 
-using UefiResourcePackEditor.UI.ViewModels;
+using AsusUefiImagePackEditor.UI.ViewModels;
 
-namespace UefiResourcePackEditor.UI.Views
+namespace AsusUefiImagePackEditor.UI.Views
 {
     public partial class MainWindow: Window
     {

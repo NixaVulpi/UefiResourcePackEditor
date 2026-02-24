@@ -2,16 +2,16 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace UefiResourcePackEditor.UI.Converters
+namespace AsusUefiImagePackEditor.UI.Converters
 {
-    public class BoolToValueConverter: IValueConverter
+    public class NullToValueConverter: IValueConverter
     {
-        public object? TrueValue { get; set; }
-        public object? FalseValue { get; set; }
+        public object? NullValue { get; set; }
+        public object? NotNullValue { get; set; }
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value as bool? == true ? TrueValue : FalseValue;
+            return value is null ? NullValue : NotNullValue;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

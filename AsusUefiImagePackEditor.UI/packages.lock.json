@@ -80,7 +80,7 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
-      "uefiresourcepackeditor.core": {
+      "asusuefiimagepackeditor.core": {
         "type": "Project"
       }
     }

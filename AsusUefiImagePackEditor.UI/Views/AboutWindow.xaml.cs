@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Navigation;
 
-namespace UefiResourcePackEditor.UI.Views;
+namespace AsusUefiImagePackEditor.UI.Views;
 
 public partial class AboutWindow: Window
 {

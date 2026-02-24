@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace UefiResourcePackEditor.Core.Models;
+namespace AsusUefiImagePackEditor.Core.Models;
 
 public sealed class ResourceBlock: ICloneable
 {

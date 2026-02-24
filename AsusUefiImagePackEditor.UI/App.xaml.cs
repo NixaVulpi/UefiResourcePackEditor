@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace UefiResourcePackEditor.UI;
+namespace AsusUefiImagePackEditor.UI;
 
 public partial class App: Application
 {

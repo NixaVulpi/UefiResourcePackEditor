@@ -31,12 +31,12 @@ jobs:
         run: msbuild -m -t:Restore,Build -p:Configuration=Release -p:Platform='Any CPU' -p:RestoreLockedMode=true
 
       - name: Package
-        working-directory: UefiResourcePackEditor.UI/bin/Release/net462
-        run: Get-ChildItem | Compress-Archive -CompressionLevel Optimal -DestinationPath UefiResourcePackEditor.zip
+        working-directory: AsusUefiImageEditor.UI/bin/Release/net462
+        run: Get-ChildItem | Compress-Archive -CompressionLevel Optimal -DestinationPath AsusUefiImageEditor.zip
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           files: |
-              UefiResourcePackEditor.UI/bin/Release/net462/UefiResourcePackEditor.zip
+              AsusUefiImageEditor.UI/bin/Release/net462/AsusUefiImageEditor.zip

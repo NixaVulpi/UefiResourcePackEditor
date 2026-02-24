@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-using UefiResourcePackEditor.Core.Models;
+using AsusUefiImagePackEditor.Core.Models;
 
-namespace UefiResourcePackEditor.UI.ViewModels;
+namespace AsusUefiImagePackEditor.UI.ViewModels;
 
 public partial class ResourceItemViewModel: ObservableObject
 {
@@ -37,9 +37,6 @@ public partial class ResourceItemViewModel: ObservableObject
         Index = index;
         LoadPreviewImage();
     }
-
-    [RelayCommand]
-    private void CopyId() => Clipboard.SetText(Id.ToString());
 
     [RelayCommand]
     private async Task ReplaceResourceAsync()

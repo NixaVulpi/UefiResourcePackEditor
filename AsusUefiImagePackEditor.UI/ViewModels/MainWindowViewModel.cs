@@ -10,10 +10,10 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 
-using UefiResourcePackEditor.Core.Models;
-using UefiResourcePackEditor.UI.Views;
+using AsusUefiImagePackEditor.Core.Models;
+using AsusUefiImagePackEditor.UI.Views;
 
-namespace UefiResourcePackEditor.UI.ViewModels;
+namespace AsusUefiImagePackEditor.UI.ViewModels;
 
 public partial class MainWindowViewModel: ObservableObject
 {
@@ -39,7 +39,7 @@ public partial class MainWindowViewModel: ObservableObject
     {
         get
         {
-            string title = "UEFI Resource Pack Editor";
+            string title = "ASUS UEFI Image Pack Editor";
             return !string.IsNullOrEmpty(CurrentFilePath) ? $"{Path.GetFileName(CurrentFilePath)}{(IsModified ? " *" : string.Empty)} - {title}" : title;
         }
     }
@@ -69,7 +69,7 @@ public partial class MainWindowViewModel: ObservableObject
 
         OpenFileDialog dialog = new()
         {
-            Filter = "UEFI Resource Files|*.bin;*.raw|All Files|*.*",
+            Filter = "Binary Files|*.bin;*.raw|All Files|*.*",
             CheckFileExists = true,
             CheckPathExists = true
         };
@@ -111,7 +111,7 @@ public partial class MainWindowViewModel: ObservableObject
     {
         SaveFileDialog dialog = new()
         {
-            Filter = "UEFI Resource Files|*.bin|All Files|*.*",
+            Filter = "Binary Files (*.bin)|*.bin|Raw Files (*.raw)|*.raw|All Files (*.*)|*.*",
             DefaultExt = ".bin",
             AddExtension = true
         };

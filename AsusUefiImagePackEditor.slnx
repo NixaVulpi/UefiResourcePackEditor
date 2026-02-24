@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AsusUefiImagePackEditor.Core/AsusUefiImagePackEditor.Core.csproj" Id="e1a7f280-de7b-41d9-a3b7-573dd12c8d49" />
+  <Project Path="AsusUefiImagePackEditor.UI/AsusUefiImagePackEditor.UI.csproj" />
+</Solution>
