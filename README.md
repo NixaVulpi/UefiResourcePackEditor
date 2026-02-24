@@ -1,6 +1,8 @@
-﻿# Uefi Resource Pack Editor
+﻿# ASUS UEFI Image Pack Editor
 
-Emmm，能跑就行...
+A lightweight utility for extracting and modifying images within ASUS UEFI firmware.
+
+一款轻量级工具，用于提取并修改华硕 UEFI 固件中的图像资源。
 
 ## 开源许可
 
