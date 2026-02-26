@@ -107,8 +107,6 @@ public partial class ResourceItemViewModel: ObservableObject
                 using FileStream fs = new(dialog.FileName, FileMode.Create);
                 encoder.Save(fs);
             });
-
-            MessageBox.Show($"Image saved successfully: {dialog.FileName}", "Save Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {

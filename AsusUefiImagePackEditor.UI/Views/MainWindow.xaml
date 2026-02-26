@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:vm="clr-namespace:AsusUefiImagePackEditor.UI.ViewModels"
         xmlns:cv="clr-namespace:AsusUefiImagePackEditor.UI.Converters"
@@ -11,7 +10,7 @@
         d:DataContext="{d:DesignInstance vm:MainWindowViewModel}"
         Title="{Binding WindowTitle}"
         Height="576" Width="960"
-        MinHeight="480" MinWidth="800"
+        MinHeight="576" MinWidth="960"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <DrawingBrush x:Key="CheckerboardBrush" Viewport="0,0,20,20" ViewportUnits="Absolute" TileMode="Tile">
@@ -115,12 +114,6 @@
         <KeyBinding Key="P" Modifiers="Control" Command="{Binding SelectedResource.SavePreviewCommand}" />
     </Window.InputBindings>
 
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -129,7 +122,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0">
-            <Menu Background="Transparent" BorderThickness="0">
+            <Menu BorderThickness="0">
                 <MenuItem Header="File" FontSize="14">
                     <MenuItem Header="Open" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O" FontSize="13" />
                     <MenuItem Header="Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" FontSize="13" />
@@ -151,78 +144,61 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="320" />
-                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="3" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <ListView Grid.Column="0"
+                      ItemsSource="{Binding Resources}"
+                      SelectedItem="{Binding SelectedResource}"
+                      BorderThickness="0"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="ContextMenu" Value="{StaticResource ResourceItemContextMenu}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8,6" Margin="4,2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0">
-                        <TextBlock Margin="12,8">
-                            <Run Text="Resources" FontWeight="SemiBold" FontSize="16" />
-                            <Run Text="(" /><Run Text="{Binding Resources.Count, Mode=OneWay}" FontWeight="Bold" Foreground="#FF4FC3F7" /><Run Text=")" />
-                        </TextBlock>
-                    </Border>
-
-                    <ListView Grid.Row="1"
-                              ItemsSource="{Binding Resources}"
-                              SelectedItem="{Binding SelectedResource}"
-                              BorderThickness="0"
-                              Background="Transparent"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="ContextMenu" Value="{StaticResource ResourceItemContextMenu}" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="Transparent" Padding="8,6" Margin="4,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Margin="0,0,8,0" Background="{StaticResource CheckerboardBrush}">
-                                            <Image Grid.Column="0"
-                                                   Source="{Binding PreviewImage}"
-                                                   Width="40" Height="40"
-                                                   Stretch="Uniform" />
-                                        </Border>
-
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{Binding DisplayName}"
-                                                       FontWeight="SemiBold"
-                                                       FontSize="13"
-                                                       TextTrimming="CharacterEllipsis" />
-                                            <TextBlock FontSize="11">
-                                                <Run Text="Size:" />
-                                                <Run Text="{Binding SizeText, Mode=OneWay}" />
-                                                <TextBlock Text="| Modified" FontSize="11" Visibility="{Binding IsModified, Converter={StaticResource BoolToVisibleConverter}}" />
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </Grid>
+                                <Border Margin="0,0,8,0" Background="{StaticResource CheckerboardBrush}">
+                                    <Image Grid.Column="0"
+                                           Source="{Binding PreviewImage}"
+                                           Width="40" Height="40"
+                                           Stretch="Uniform" />
                                 </Border>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
-            </Border>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               FontWeight="SemiBold"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock FontSize="11">
+                                        <Run Text="Size:" />
+                                        <Run Text="{Binding SizeText, Mode=OneWay}" />
+                                        <TextBlock Text="| Modified" FontSize="11" Visibility="{Binding IsModified, Converter={StaticResource BoolToVisibleConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <GridSplitter Grid.Column="1"
                           Width="5"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch" />
 
-            <Border Grid.Column="2" BorderThickness="1,0,1,1" ContextMenu="{StaticResource PreviewContextMenu}" DataContext="{Binding SelectedResource}">
+            <Border Grid.Column="2" BorderThickness="1" ContextMenu="{StaticResource PreviewContextMenu}" DataContext="{Binding SelectedResource}">
                 <Grid>
                     <Border Background="{StaticResource CheckerboardBrush}">
                         <Image Source="{Binding PreviewImage}"
@@ -248,7 +224,10 @@
                                HorizontalAlignment="Center" />
                 </StatusBarItem>
                 <StatusBarItem Visibility="{Binding CurrentFilePath, Converter={StaticResource NullToCollapsedConverter}}">
-                    <TextBlock Text="{Binding CurrentFilePath}" />
+                    <TextBlock>
+                        <Run Text="{Binding CurrentFilePath, Mode=OneWay}" />
+                        <Run Text="{Binding Resources.Count, Mode=OneWay, StringFormat=({0})}" />
+                    </TextBlock>
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right" Visibility="{Binding SelectedResource, Converter={StaticResource NullToCollapsedConverter}}">
                     <TextBlock FontSize="12" DataContext="{Binding SelectedResource}">

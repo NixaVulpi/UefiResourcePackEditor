@@ -22,6 +22,8 @@ public partial class MainWindowViewModel: ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveAsCommand))]
     private string? _currentFilePath;
 
     [ObservableProperty]
@@ -30,7 +32,6 @@ public partial class MainWindowViewModel: ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    [NotifyCanExecuteChangedFor(nameof(SaveAsCommand))]
     private bool _isModified;
 
     public ObservableCollection<ResourceItemViewModel> Resources { get; } = [];
@@ -44,7 +45,9 @@ public partial class MainWindowViewModel: ObservableObject
         }
     }
 
-    public bool CanSave => IsModified && !string.IsNullOrEmpty(CurrentFilePath);
+    public bool CanSaveAs => !string.IsNullOrEmpty(CurrentFilePath);
+
+    public bool CanSave => IsModified && CanSaveAs;
 
     [RelayCommand]
     private async Task OpenFileAsync()
@@ -86,27 +89,31 @@ public partial class MainWindowViewModel: ObservableObject
             using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous);
             ResourcePackage package = await ResourcePackage.ParseFromAsync(fileStream);
 
-            ResourcePackage = package;
+            foreach (ResourceItemViewModel resource in Resources)
+            {
+                resource.PropertyChanged -= OnResourceItemChanged;
+            }
             Resources.Clear();
             for (int i = 0; i < package.Blocks.Count; i++)
             {
-                Resources.Add(new ResourceItemViewModel(package.Blocks[i], i));
+                ResourceItemViewModel resourceItemViewModel = new(package.Blocks[i], i);
+                resourceItemViewModel.PropertyChanged += OnResourceItemChanged;
+                Resources.Add(resourceItemViewModel);
             }
-
+            ResourcePackage = package;
             CurrentFilePath = path;
             IsModified = false;
-            MessageBox.Show($"Loaded {Resources.Count} resources", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to open file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(ex.Message, "Failed to open file", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync() => await SaveToFileAsync(CurrentFilePath!);
 
-    [RelayCommand(CanExecute = nameof(CanSave))]
+    [RelayCommand(CanExecute = nameof(CanSaveAs))]
     private async Task SaveAsAsync()
     {
         SaveFileDialog dialog = new()
@@ -139,11 +146,10 @@ public partial class MainWindowViewModel: ObservableObject
             await ResourcePackage.SerializeToAsync(fileStream);
 
             IsModified = false;
-            MessageBox.Show("File saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Save failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(ex.Message, "Save failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -153,24 +159,27 @@ public partial class MainWindowViewModel: ObservableObject
         if (IsModified)
         {
             MessageBoxResult result = MessageBox.Show(
-                "You have unsaved changes. Would you like to save before exiting?",
-                "Unsaved Changes",
-                MessageBoxButton.YesNoCancel,
-                MessageBoxImage.Warning);
+            "You have unsaved changes. Would you like to save before exiting?",
+            "Unsaved Changes",
+            MessageBoxButton.YesNoCancel,
+            MessageBoxImage.Warning);
 
-            if (result == MessageBoxResult.Yes)
+            switch (result)
             {
-                await SaveAsync();
-            }
-            else if (result == MessageBoxResult.Cancel)
-            {
-                return;
+                case MessageBoxResult.Yes:
+                    await SaveAsync();
+                    break;
+                case MessageBoxResult.No:
+                    IsModified = false;
+                    break;
+                case MessageBoxResult.Cancel:
+                    return;
             }
         }
 
         if (window is Window w)
         {
-            w.Close();
+            await w.Dispatcher.BeginInvoke(new Action(w.Close));
         }
     }
 
@@ -184,20 +193,7 @@ public partial class MainWindowViewModel: ObservableObject
         aboutWindow.ShowDialog();
     }
 
-    partial void OnSelectedResourceChanged(ResourceItemViewModel? oldValue, ResourceItemViewModel? newValue)
-    {
-        if (oldValue is not null)
-        {
-            oldValue.PropertyChanged -= OnSelectedResourceItemChanged;
-        }
-
-        if (newValue is not null)
-        {
-            newValue.PropertyChanged += OnSelectedResourceItemChanged;
-        }
-    }
-
-    private void OnSelectedResourceItemChanged(object sender, PropertyChangedEventArgs e)
+    private void OnResourceItemChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(IsModified) &&
             ((ResourceItemViewModel) sender).IsModified)
@@ -210,9 +206,9 @@ public partial class MainWindowViewModel: ObservableObject
     {
         if (!value)
         {
-            foreach (ResourceItemViewModel item in Resources)
+            foreach (ResourceItemViewModel resource in Resources)
             {
-                item.IsModified = false;
+                resource.IsModified = false;
             }
         }
     }
